@@ -17,8 +17,9 @@ const MEMORIAL = {
 };
 
 // Ensure runtime directories exist
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
-const DATA_DIR = path.join(__dirname, 'data');
+// On cloud platforms, set these env vars to a persistent volume path.
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
+const DATA_DIR    = process.env.DATA_DIR    || path.join(__dirname, 'data');
 [UPLOADS_DIR, DATA_DIR].forEach(dir => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
