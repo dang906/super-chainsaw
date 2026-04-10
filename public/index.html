@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Hero ── -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="candle" aria-hidden="true">
+        <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Flame -->
+          <ellipse cx="30" cy="14" rx="9" ry="13" fill="#f5c842" opacity="0.95"/>
+          <ellipse cx="30" cy="11" rx="6" ry="9"  fill="#ff9a2e" opacity="0.85"/>
+          <ellipse cx="30" cy="9"  rx="3.5" ry="6" fill="#fffbe0" opacity="0.9"/>
+          <!-- Wick -->
+          <line x1="30" y1="24" x2="30" y2="20" stroke="#4a2e0a" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Body -->
+          <rect x="20" y="24" width="20" height="66" rx="4" fill="#ede0cc"/>
+          <!-- Drip -->
+          <rect x="20" y="24" width="20" height="10" rx="3" fill="#d9c9b0"/>
+          <ellipse cx="24" cy="34" rx="3" ry="5" fill="#d9c9b0"/>
+        </svg>
+      </div>
+      <h1 id="hero-name" class="hero-name">In Loving Memory</h1>
+      <p id="hero-dates" class="hero-dates"></p>
+      <p id="hero-bio"   class="hero-bio"></p>
+    </div>
+  </header>
+
+  <!-- ── Controls bar ── -->
+  <div class="controls-bar" id="controls-bar">
+    <div class="tab-group" role="tablist" aria-label="Memory views">
+      <button class="tab active" id="tab-public" role="tab" aria-selected="true" data-tab="public">
+        All Memories
+      </button>
+      <button class="tab" id="tab-family" role="tab" aria-selected="false" data-tab="family">
+        <svg class="tab-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 1a3 3 0 0 0-3 3v1H3.5A1.5 1.5 0 0 0 2 6.5v7A1.5 1.5 0 0 0 3.5 15h9A1.5 1.5 0 0 0 14 13.5v-7A1.5 1.5 0 0 0 12.5 5H11V4a3 3 0 0 0-3-3zm0 1.5A1.5 1.5 0 0 1 9.5 4v1h-3V4A1.5 1.5 0 0 1 8 2.5zM8 9a1 1 0 0 1 .5 1.866V12h-1v-1.134A1 1 0 0 1 8 9z"/>
+        </svg>
+        Family Only
+      </button>
+    </div>
+    <button class="btn-share" id="btn-share" aria-haspopup="dialog">
+      <svg class="btn-share-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 1a.5.5 0 0 1 .5.5v6h6a.5.5 0 0 1 0 1h-6v6a.5.5 0 0 1-1 0v-6H1a.5.5 0 0 1 0-1h6v-6A.5.5 0 0 1 8 1z"/>
+      </svg>
+      Share a Memory
+    </button>
+  </div>
+
+  <!-- ── Memory feed ── -->
+  <main class="feed" id="feed" role="main">
+    <div class="loading" id="loading">
+      <div class="spinner" role="status" aria-label="Loading memories"></div>
+      <p>Loading memories…</p>
+    </div>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="empty-candle" aria-hidden="true">🕯️</div>
+      <h2>Be the first to share a memory</h2>
+      <p>Memories shared here will light the way for those who follow.</p>
+      <button class="btn-share-empty" id="btn-share-empty">Share a Memory</button>
+    </div>
+    <div id="posts-container" aria-live="polite" aria-label="Memory posts"></div>
+  </main>
+
+  <!-- ── Share Memory Modal ── -->
+  <div class="modal-overlay" id="modal-share" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+    <div class="modal">
+      <button class="modal-close" id="close-share" aria-label="Close share memory dialog">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+        </svg>
+      </button>
+
+      <h2 id="share-modal-title" class="modal-title">Share a Memory</h2>
+      <p class="modal-subtitle">Your words help keep this memory alive.</p>
+
+      <form id="form-share" novalidate>
+        <div class="form-group">
+          <label for="input-author" class="form-label">
+            Your Name <span class="required" aria-label="required">*</span>
+          </label>
+          <input type="text" id="input-author" class="form-input"
+            placeholder="e.g. Sarah Johnson"
+            maxlength="100" autocomplete="name">
+          <div class="form-error" id="error-author" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-content" class="form-label">
+            Your Memory <span class="required" aria-label="required">*</span>
+          </label>
+          <textarea id="input-content" class="form-input form-textarea"
+            placeholder="Share a story, a cherished moment, or a message you'd like to leave…"
+            rows="6" maxlength="5000"></textarea>
+          <div class="char-count"><span id="char-count">0</span> / 5,000</div>
+          <div class="form-error" id="error-content" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Photo or Video
+            <span class="form-optional">(optional)</span>
+          </label>
+          <label class="file-upload-area" id="file-upload-area" for="input-media">
+            <input type="file" id="input-media" class="file-input"
+              accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/webm">
+            <div class="upload-placeholder" id="upload-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+              </svg>
+              <span>Click or drag to add a photo or video</span>
+              <small>JPEG, PNG, GIF, WebP, MP4, MOV, WebM · up to 200 MB</small>
+            </div>
+            <div class="upload-preview" id="upload-preview" style="display:none"></div>
+          </label>
+          <div class="form-error" id="error-media" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+          <fieldset class="fieldset-borderless">
+            <legend class="form-label">Who can see this memory?</legend>
+            <div class="visibility-options">
+              <label class="vis-option">
+                <input type="radio" name="visibility" value="public" checked>
+                <span class="vis-content">
+                  <span class="vis-icon" aria-hidden="true">🌍</span>
+                  <span class="vis-text">
+                    <strong>Everyone</strong>
+                    <small>Visible to all visitors of this page</small>
+                  </span>
+                </span>
+              </label>
+              <label class="vis-option">
+                <input type="radio" name="visibility" value="family">
+                <span class="vis-content">
+                  <span class="vis-icon" aria-hidden="true">🏡</span>
+                  <span class="vis-text">
+                    <strong>Family Only</strong>
+                    <small>Visible only to family members with the access code</small>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-error form-error-global" id="error-global" style="display:none" role="alert"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="btn-cancel-share">Cancel</button>
+          <button type="submit" class="btn-primary" id="btn-submit">
+            <span class="btn-label">Share Memory</span>
+            <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" aria-hidden="true" style="display:none">
+              <path stroke-linecap="round"
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Family Auth Modal ── -->
+  <div class="modal-overlay" id="modal-family" role="dialog" aria-modal="true" aria-labelledby="family-modal-title">
+    <div class="modal modal-sm">
+      <button class="modal-close" id="close-family" aria-label="Close family access dialog">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+        </svg>
+      </button>
+      <div class="family-modal-icon" aria-hidden="true">🏡</div>
+      <h2 id="family-modal-title" class="modal-title">Family Access</h2>
+      <p class="modal-subtitle">
+        Enter the family code to view private memories shared just for family.
+      </p>
+      <div class="form-group">
+        <input type="password" id="family-code-input" class="form-input"
+          placeholder="Family access code" autocomplete="off">
+        <div class="form-error" id="family-auth-error" role="alert"></div>
+      </div>
+      <button class="btn-primary btn-full" id="btn-verify-family">Enter</button>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
